@@ -1,23 +1,36 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
-  </div>
+    <div id="app">
+        <v-header :seller="seller"></v-header>
+
+        <v-nav></v-nav>
+
+        <router-view></router-view>
+    </div>
 </template>
 
 <script>
+import axios from 'axios'
+import header from './components/header/header'
+import nav from './components/nav/nav'
 export default {
-  name: 'App'
+    name: 'App',
+    data() {
+        return {
+            seller: {}
+        }
+    },
+    components: {
+        'v-header': header,
+        'v-nav': nav
+    },
+    mounted() {
+        axios.get('/api/data.json').then((res) => {
+            this.seller = res.data.seller
+            console.log(this.seller)
+        })
+    }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="less" scoped>
 </style>
