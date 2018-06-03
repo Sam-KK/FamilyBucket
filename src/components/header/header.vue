@@ -132,6 +132,7 @@ export default {
             .content {
                 margin-left: 16px;
                 .title {
+                    margin-top: 2px;
                     font-size: 0;
                     .brand,
                     .name {
@@ -249,6 +250,7 @@ export default {
                     }
                     .star-box {
                         margin-top: 16px;
+                        text-align: center;
                     }
                     .title {
                         display: flex;

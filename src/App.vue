@@ -26,7 +26,6 @@ export default {
     mounted() {
         axios.get('/api/data.json').then((res) => {
             this.seller = res.data.seller
-            console.log(this.seller)
         })
     }
 }

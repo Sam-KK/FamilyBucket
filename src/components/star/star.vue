@@ -67,20 +67,19 @@ export default {
         }
     }
 .star {
-    text-align: center;
     font-size: 0;
     .star-item {
         display: inline-block;
         vertical-align: middle;
-        &:last-child {
-            margin-right: 0;
-        }
     }
     &.star-48 {
         .star-item {
             margin-right: 22px;
             width: 20px;
             height: 20px;
+            &:last-child {
+                margin-right: 0;
+            }
             &.on {
                 .bg-img('star48_on');
             }
@@ -97,6 +96,9 @@ export default {
             margin-right: 6px;
             width: 15px;
             height: 15px;
+            &:last-child {
+                margin-right: 0;
+            }
             &.on {
                 .bg-img('star36_on');
             }
@@ -113,6 +115,9 @@ export default {
             margin-right: 3px;
             width: 10px;
             height: 10px;
+            &:last-child {
+                margin-right: 0;
+            }
             &.on {
                 .bg-img('star36_on');
             }
