@@ -19,28 +19,85 @@
                 </span>
             </div>
         </div>
-        <div class="count-wrap" v-if="seller.supports">
+        <div class="count-wrap" v-if="seller.supports" @click="eventShowDetail">
             <span class="count">
                 {{ seller.supports.length }}个
             </span>
+            <i class="iconfont icon-previewright"></i>
         </div>
     </div>
-    <div class="bulletin">
+    <div class="bulletin" @click="eventShowDetail">
         <span class="icon"></span>
         <span class="text">
             {{ seller.bulletin }}
         </span>
-        <span>12</span>
+        <i class="iconfont icon-previewright"></i>
+    </div>
+    <div class="background">
+        <img :src="seller.avatar" width="100%" height="100%" alt="">
+    </div>
+    <div class="header-detail clearfix" v-show="showDetail">
+        <div class="detail-container">
+            <div class="content">
+                <h1 class="name">{{ seller.name }}</h1>
+                <div class="star-box">
+                    <v-star :size="48" :score="seller.score"></v-star>
+                </div>
+                <div class="title">
+                    <div class="line"></div>
+                    <div class="text">优惠信息</div>
+                    <div class="line"></div>
+                </div>
+                <ul class="supports">
+                    <li v-for="item in seller.supports" :key="item.type">
+                        <span class="icon" :class="classMap[item.type]"></span>
+                        <span class="text">{{ item.description }}</span>
+                    </li>
+                </ul>
+                <div class="title">
+                    <div class="line"></div>
+                    <div class="text">商家公告</div>
+                    <div class="line"></div>
+                </div>
+                <div class="detail-bulletin">
+                    <p>{{ seller.bulletin }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="detail-footer" @click="eventHideDetail">
+            <i class="iconfont icon-close"></i>
+        </div>
     </div>
 </div>
 </template>
 
 <script type="text/ecmascript-6">
+import star from '@/components/star/star'
 export default {
     name: 'homeHeader',
     props: {
         seller: {
             type: Object
+        }
+    },
+    components: {
+        'v-star': star
+    },
+    data() {
+        return {
+            showDetail: false
+        }
+    },
+    created() {
+        // 主要看这个classMap
+        this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+    },
+    methods: {
+        eventShowDetail() {
+            this.showDetail = !this.showDetail
+        },
+        eventHideDetail() {
+            this.showDetail = !this.showDetail
         }
     }
 }
@@ -122,6 +179,9 @@ export default {
                 .count {
                     font-size: 10px;
                 }
+                .iconfont {
+                    font-size: 12px;
+                }
             }
         }
         .bulletin {
@@ -151,6 +211,116 @@ export default {
                 font-size: 10px;
                 line-height: 28px;
                 .ellipsis();
+            }
+            .iconfont {
+                font-size: 10px;
+            }
+        }
+        .background {
+            z-index: -1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            filter: blur(10px);
+        }
+        .header-detail {
+            z-index: 99;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background: rgba(7, 17, 27, .8);
+            .detail-container {
+                margin-top: 64px;
+                min-height: 100%;
+                .content {
+                    padding-bottom: 50px;
+                    padding-left: 9%;
+                    padding-right: 9%;
+                    .name {
+                        font-size: 16px;
+                        color: #fff;
+                        font-weight: 700;
+                        text-align: center;
+                    }
+                    .star-box {
+                        margin-top: 16px;
+                    }
+                    .title {
+                        display: flex;
+                        margin: 28px auto 24px auto;
+                        .line {
+                            position: relative;
+                            top: -6px;
+                            flex: 1;
+                            border-bottom: 1px solid rgba(255, 255, 255, .2);
+                        }
+                        .text {
+                            padding: 0 12px;
+                            font-size: 14px;
+                            font-weight: bold;
+                        }
+                    }
+                    .supports {
+                        padding: 0 4%;
+                        li {
+                            margin-bottom: 12px;
+                            font-size: 0;
+                            &:last-child {
+                                margin-bottom: 0;
+                            }
+                            span {
+                                display: inline-block;
+                                vertical-align: middle;
+                            }
+                            .icon {
+                                margin-right: 6px;
+                                width: 16px;
+                                height: 16px;
+                                &.decrease {
+                                    .bg-img('decrease_1');
+                                }
+                                &.discount {
+                                    .bg-img('discount_1');
+                                }
+                                &.special {
+                                    .bg-img('special_1');
+                                }
+                                &.invoice {
+                                    .bg-img('invoice_1');
+                                }
+                                &.guarantee {
+                                    .bg-img('guarantee_1');
+                                }
+                            }
+                            .text {
+                                font-size: 12px;
+                                font-weight: 200;
+                                line-height: 12px;
+                            }
+                        }
+                    }
+                    .detail-bulletin {
+                        padding: 0 4%;
+                        p {
+                            font-size: 12px;
+                            line-height: 24px;
+                            font-weight: 200;
+                        }
+                    }
+                }
+            }
+            .detail-footer {
+                margin-top: -50px;
+                height: 50px;
+                text-align: center;
+                .iconfont {
+                    font-size: 24px;
+                }
             }
         }
     }

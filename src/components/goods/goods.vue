@@ -11,10 +11,25 @@
             </ul>
         </div>
 
-        <div class="foods">
+        <div class="foods" ref="foods">
             <ul>
-                <li v-for="(item, index) in goods" :key="index">
+                <li v-for="(item, index) in goods" class="food-list" :key="index">
                     <h3 class="foods-title">{{ item.name }}</h3>
+                    <ul>
+                        <li v-for="(food, index) in item.foods" class="food-item" :key="index">
+                            <div class="img">
+                                <img :src="food.icon" width="56" height="56" alt="">
+                            </div>
+                            <div class="content">
+                                <h3 class="name">{{ food.name }}</h3>
+                                <p v-if="food.description" class="desc">{{ food.description }}</p>
+                                <div class="extra">
+                                    <span class="count">月售{{ food.sellCount }}份</span>
+                                    <span class="rate"> 好评率{{ food.rating }}%</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
@@ -39,8 +54,8 @@ export default {
             this.goods = res.data.goods
             this.$nextTick(() => {
                 this.scroll = new BScroll(this.$refs.menu, {})
+                this.scroll = new BScroll(this.$refs.foods, {})
             })
-            console.log(this.goods)
         })
     }
 }
@@ -108,6 +123,51 @@ export default {
 
         .foods {
             flex: 1;
+            .foods-title {
+                padding-left: 14px;
+                font-size: 12px;
+                color: rgb(147, 153, 159);
+                height: 26px;
+                line-height: 26px;
+                border-left: 1px solid #d9dde1;
+                background: #f3f5f7;
+            }
+            .food-item {
+                position: relative;
+                display: flex;
+                margin: 18px;
+                padding-bottom: 18px;
+                border-bottom: 1px solid rgba(7,17,27,0.1);
+                &:last-child {
+                    border-bottom: none;
+                }
+                .img {
+                    flex: 56px 0 0;
+                    margin-right: 10px;
+                }
+                .content {
+                    flex: 1;
+                    .name {
+                        margin: 2px 0 8px 0;
+                        font-size: 14px;
+                        color: rgb(7, 17, 27);
+                        line-height: 20px;
+                    }
+                    .desc,
+                    .extra {
+                        font-size: 10px;
+                        color: rgb(147, 153, 159);
+                    }
+                    .desc {
+                        margin-bottom: 8px;
+                    }
+                    .extra {
+                        .count {
+                            margin-right: 8px;
+                        }
+                    }
+                }
+            }
         }
     }
 </style>

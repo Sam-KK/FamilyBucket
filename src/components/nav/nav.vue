@@ -4,10 +4,10 @@
         <a href="">商品</a>
     </router-link>
     <router-link tag="li" to="/ratings">
-        <a href="">商品</a>
+        <a href="">评论</a>
     </router-link>
     <router-link tag="li" to="/seller">
-        <a href="">商品</a>
+        <a href="">商家</a>
     </router-link>
 </ul>
 </template>
