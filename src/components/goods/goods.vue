@@ -3,7 +3,10 @@
         <!-- menu control -->
         <div class="menu" ref="menuWrapper">
             <ul>
-                <li v-for="(item, index) in goods" :class="{'current': currentIndex === index}" ref="menuItem" :key="index">
+                <li v-for="(item, index) in goods"
+                    :class="{'current': currentIndex === index}"
+                    @click="selectMenu(index, $event)"
+                    ref="menuItem" :key="index">
                     <div class="inner">
                         <span v-show="item.type > 0" class="icon" :class="classMap[item.type]"></span>
                         {{ item.name }}
@@ -30,6 +33,14 @@
                                     <span class="count">月售{{ food.sellCount }}份</span>
                                     <span class="rate"> 好评率{{ food.rating }}%</span>
                                 </div>
+                                <div class="price">
+                                    <span class="now">￥{{ food.price }}</span>
+                                    <span class="old" v-if="food.oldPrice">￥{{ food.oldPrice }}</span>
+                                </div>
+                                <div class="control-wrap">
+                                    <!-- 把当前的 food 传递给cartControl 组件 -->
+                                    <v-control :food="food"></v-control>
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -39,13 +50,14 @@
 
         <!-- shopCart control -->
         <!-- 接收 food 传给 selectFoods -->
-        <v-cart :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"></v-cart>
+        <v-cart :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></v-cart>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
 import axios from 'axios'
 import BScroll from 'better-scroll'
+import cartControl from '@/components/cartcontrol/cartcontrol'
 import shopCart from '@/components/shopcart/shopcart'
 export default {
     name: 'goods',
@@ -55,7 +67,8 @@ export default {
         }
     },
     components: {
-        'v-cart': shopCart
+        'v-cart': shopCart,
+        'v-control': cartControl
     },
     data() {
         return {
@@ -85,6 +98,7 @@ export default {
             return 0
         },
         // 选中的 food 传给 shopCart 组件
+        // 自动将所有的goods.food添加一个count属性,方便做数量运算
         selectFoods() {
             let foods = []
             this.goods.forEach((good) => {
@@ -120,6 +134,7 @@ export default {
                 click: true
             })
             this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+                click: true,
                 // 结合BScroll的接口使用,3实时派发scroll事件
                 probeType: 3
             })
@@ -150,6 +165,16 @@ export default {
             let menuItem = this.$refs.menuItem
             let el = menuItem[index]
             this.menuScroll.scrollToElement(el, 300, 0, -100)
+        },
+        // 点击 menu foodList 跳到相对应区域
+        selectMenu(index, event) {
+            // 忽略掉BScroll的事件
+            if (!event._constructed) {
+                return
+            }
+            let foodList = this.$refs.foodList
+            let el = foodList[index]
+            this.foodsScroll.scrollToElement(el, 300)
         }
     }
 }
@@ -237,6 +262,7 @@ export default {
                 border-bottom: 1px solid rgba(7,17,27,0.1);
                 &:last-child {
                     border-bottom: none;
+                    margin-bottom: 0;
                 }
                 .img {
                     flex: 56px 0 0;
@@ -262,6 +288,27 @@ export default {
                         .count {
                             margin-right: 8px;
                         }
+                    }
+                    .price {
+                        line-height: 30px;
+                        font-weight: bold;
+                        font-size: 0;
+                        .now {
+                            margin-right: 8px;
+                            font-size: 14px;
+                            color: rgb(240, 20, 20);
+                        }
+                        .old {
+                            text-decoration: line-through;
+                            font-size: 10px;
+                            color: rgb(147, 153, 159);
+                        }
+                    }
+                    .control-wrap {
+                        z-index: 10;
+                        position: absolute;
+                        bottom: 12px;
+                        right: 0;
                     }
                 }
             }

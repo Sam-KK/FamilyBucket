@@ -2,20 +2,20 @@
     <div class="shop-cart">
         <div class="container">
             <div class="cart-left">
-                <div class="logo-wrap">
+                <div class="logo-wrap" :class="{ 'highlight': totalCount > 0 }">
                     <div class="logo">
                         <i class="icon icon-cart"></i>
                     </div>
-                    <div class="num">1</div>
+                    <div class="num" v-show="totalCount > 0">{{ totalCount }}</div>
                 </div>
                 <ul class="price-wrap">
-                    <li class="price">￥0</li>
+                    <li class="price" :class="{ 'highlight': totalCount > 0 }">￥{{ totalPrice }}</li>
                     <li class="desc">另需配送费￥{{ deliveryPrice }}元 </li>
                 </ul>
             </div>
             <div class="cart-right">
-                <div class="pay">
-                    234235
+                <div class="pay" :class="payClass">
+                    {{ payText }}
                 </div>
             </div>
         </div>
@@ -29,10 +29,11 @@
                 </div>
                 <div class="list-content">
                     <ul>
-                        <li class="list-food">
-                            <div class="food-name"></div>
-                            <div class="food-price"></div>
+                        <li class="list-food" v-for="(food, index) in selectFoods" :key="index">
+                            <div class="food-name">{{ food.name }}</div>
+                            <div class="food-price">￥{{ food.price }}</div>
                             <div class="cart-control">
+                                <v-control :food="food"></v-control>
                             </div>
                         </li>
                     </ul>
@@ -43,8 +44,12 @@
 </template>
 
 <script type="text/ecmascript-6">
+import cartControl from '@/components/cartcontrol/cartcontrol'
 export default {
     name: 'shopcart',
+    components: {
+        'v-control': cartControl
+    },
     props: {
         // 接受 goods 组件传递的 food
         selectFoods: {
@@ -58,6 +63,43 @@ export default {
         },
         minPrice: {
             type: Number
+        }
+    },
+    computed: {
+        // 计算总价
+        totalPrice() {
+            let total = 0
+            this.selectFoods.forEach((food) => {
+                total += food.price * food.count
+            })
+            return total
+        },
+        // 计算总数量
+        totalCount() {
+            let count = 0
+            this.selectFoods.forEach((food) => {
+                count += food.count
+            })
+            return count
+        },
+        // 去结算
+        payText() {
+            if (this.totalPrice === 0) {
+                return `￥${this.minPrice}起送`
+            } else if (this.totalPrice < this.minPrice) {
+                let diff = this.minPrice - this.totalPrice
+                return `还差￥${diff}起送`
+            } else {
+                return `去结算`
+            }
+        },
+        // 去结算样式
+        payClass() {
+            if (this.totalPrice < this.minPrice) {
+                return 'not-enough'
+            } else {
+                return 'enough'
+            }
         }
     }
 }
@@ -223,6 +265,7 @@ export default {
                     box-sizing: border-box;
                     .food-price {
                         flex: 1;
+                        margin-right: 12px;
                         font-size: 14px;
                         font-weight: 700;
                         color: rgb(240, 20, 20);
