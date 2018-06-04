@@ -1,8 +1,9 @@
 <template>
     <div class="goods">
-        <div class="menu" ref="menu">
+        <!-- menu control -->
+        <div class="menu" ref="menuWrapper">
             <ul>
-                <li v-for="(item, index) in goods" :key="index">
+                <li v-for="(item, index) in goods" :class="{'current': currentIndex === index}" ref="menuItem" :key="index">
                     <div class="inner">
                         <span v-show="item.type > 0" class="icon" :class="classMap[item.type]"></span>
                         {{ item.name }}
@@ -11,11 +12,13 @@
             </ul>
         </div>
 
-        <div class="foods" ref="foods">
+        <!-- foodList control -->
+        <div class="foods" ref="foodsWrapper">
             <ul>
-                <li v-for="(item, index) in goods" class="food-list" :key="index">
+                <li v-for="(item, index) in goods" class="food-list" :key="index" ref="foodList">
                     <h3 class="foods-title">{{ item.name }}</h3>
                     <ul>
+                        <!-- food 传给 shopCart 组件 -->
                         <li v-for="(food, index) in item.foods" class="food-item" :key="index">
                             <div class="img">
                                 <img :src="food.icon" width="56" height="56" alt="">
@@ -33,17 +36,65 @@
                 </li>
             </ul>
         </div>
+
+        <!-- shopCart control -->
+        <!-- 接收 food 传给 selectFoods -->
+        <v-cart :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"></v-cart>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
 import axios from 'axios'
 import BScroll from 'better-scroll'
+import shopCart from '@/components/shopcart/shopcart'
 export default {
     name: 'goods',
+    props: {
+        seller: {
+            type: Object
+        }
+    },
+    components: {
+        'v-cart': shopCart
+    },
     data() {
         return {
-            goods: []
+            goods: [],
+            foodListHeight: [], // 用来储存foodList区域的各个区块的高度(clientHeight)
+            scrollY: 0 // 用来存储foods区域的滚动的Y坐标
+        }
+    },
+    computed: {
+        // 计算到达哪个区域的区间的时候的对应的索引值
+        currentIndex() {
+            for (let i = 0, len = this.foodListHeight.length; i < len; i++) {
+                // 当前menu子块的高度
+                let currentHeight = this.foodListHeight[i]
+
+                // 下一个menu子块的高度
+                let nextCurrentHeight = this.foodListHeight[i + 1]
+
+                // 滚动到底部的时候,height2为undefined,需要考虑这种情况
+                // 需要确定是在两个menu子块的高度区间
+
+                if (!nextCurrentHeight || (this.scrollY >= currentHeight && this.scrollY < nextCurrentHeight)) {
+                    this.menuFollowScroll(i)
+                    return i
+                }
+            }
+            return 0
+        },
+        // 选中的 food 传给 shopCart 组件
+        selectFoods() {
+            let foods = []
+            this.goods.forEach((good) => {
+                good.foods.forEach((food) => {
+                    if (food.count) {
+                        foods.push(food)
+                    }
+                })
+            })
+            return foods
         }
     },
     created() {
@@ -52,11 +103,54 @@ export default {
     mounted() {
         axios.get('/api/data.json').then((res) => {
             this.goods = res.data.goods
+            // 使用$nextTick来等待异步完成之后更新dom
             this.$nextTick(() => {
-                this.scroll = new BScroll(this.$refs.menu, {})
-                this.scroll = new BScroll(this.$refs.foods, {})
+                this._initScroll() // 绑定滚动dom
+
+                // 计算foodsList区域的各个区域的高度
+                this._getFoodsListHeight()
             })
         })
+    },
+    methods: {
+        // 初始化scroll区域
+        _initScroll() {
+            this.menuScroll = new BScroll(this.$refs.menuWrapper, {
+                // 结合BScroll的接口使用,是否将click事件传递,默认被拦截了
+                click: true
+            })
+            this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+                // 结合BScroll的接口使用,3实时派发scroll事件
+                probeType: 3
+            })
+
+            this.foodsScroll.on('scroll', (position) => {
+                // 滚动坐标会出现负的,并且是小数,所以需要处理一下
+                this.scrollY = Math.abs(Math.round(position.y))
+            })
+        },
+        // 计算foods内部块的高度
+        _getFoodsListHeight() {
+            // 获取每一个foodList的dom对象
+            let foodList = this.$refs.foodList
+            let height = 0
+
+            // 初始化第一个高度为0
+            this.foodListHeight.push(height)
+
+            for (let i = 0; i < foodList.length; i++) {
+                let item = foodList[i]
+                height += item.clientHeight
+
+                this.foodListHeight.push(height)
+                console.log(this.foodListHeight)
+            }
+        },
+        menuFollowScroll(index) {
+            let menuItem = this.$refs.menuItem
+            let el = menuItem[index]
+            this.menuScroll.scrollToElement(el, 300, 0, -100)
+        }
     }
 }
 </script>
@@ -90,6 +184,9 @@ export default {
                 width: 100%;
                 height: 60px;
                 line-height: 14px;
+                &.current {
+                    background: #fff;
+                }
                 .inner {
                     display: table-cell;
                     padding: 0 12px;
