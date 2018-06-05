@@ -22,7 +22,7 @@
                     <h3 class="foods-title">{{ item.name }}</h3>
                     <ul>
                         <!-- food 传给 shopCart 组件 -->
-                        <li v-for="(food, index) in item.foods" class="food-item" :key="index">
+                        <li v-for="(food, index) in item.foods" class="food-item" @click="selectFood(food, $event)" :key="index">
                             <div class="img">
                                 <img :src="food.icon" width="56" height="56" alt="">
                             </div>
@@ -34,8 +34,8 @@
                                     <span class="rate"> 好评率{{ food.rating }}%</span>
                                 </div>
                                 <div class="price">
-                                    <span class="now">￥{{ food.price }}</span>
-                                    <span class="old" v-if="food.oldPrice">￥{{ food.oldPrice }}</span>
+                                    <span class="now">¥{{ food.price }}</span>
+                                    <span class="old" v-if="food.oldPrice">¥{{ food.oldPrice }}</span>
                                 </div>
                                 <div class="control-wrap">
                                     <!-- 把当前的 food 传递给cartControl 组件 -->
@@ -51,6 +51,9 @@
         <!-- shopCart control -->
         <!-- 接收 food 传给 selectFoods -->
         <v-cart :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></v-cart>
+
+        <!-- food 详情 -->
+        <v-detail :food="selectedFoods"></v-detail>
     </div>
 </template>
 
@@ -59,6 +62,7 @@ import axios from 'axios'
 import BScroll from 'better-scroll'
 import cartControl from '@/components/cartcontrol/cartcontrol'
 import shopCart from '@/components/shopcart/shopcart'
+import foodDetail from '@/components/fooddetail/foodDetail'
 export default {
     name: 'goods',
     props: {
@@ -68,17 +72,19 @@ export default {
     },
     components: {
         'v-cart': shopCart,
-        'v-control': cartControl
+        'v-control': cartControl,
+        'v-detail': foodDetail
     },
     data() {
         return {
             goods: [],
             foodListHeight: [], // 用来储存foodList区域的各个区块的高度(clientHeight)
-            scrollY: 0 // 用来存储foods区域的滚动的Y坐标
+            scrollY: 0, // 用来存储foods区域的滚动的Y坐标
+            selectedFoods: {}
         }
     },
     computed: {
-        // 计算到达哪个区域的区间的时候的对应的索引值
+        // （第三步）计算到达哪个区域的区间的时候的对应的索引值
         currentIndex() {
             for (let i = 0, len = this.foodListHeight.length; i < len; i++) {
                 // 当前menu子块的高度
@@ -97,7 +103,7 @@ export default {
             }
             return 0
         },
-        // 选中的 food 传给 shopCart 组件
+        // （第四步）选中的 food 传给 shopCart 组件
         // 自动将所有的goods.food添加一个count属性,方便做数量运算
         selectFoods() {
             let foods = []
@@ -139,12 +145,13 @@ export default {
                 probeType: 3
             })
 
+            // (第二部) 获取 scrollY 区间值
             this.foodsScroll.on('scroll', (position) => {
                 // 滚动坐标会出现负的,并且是小数,所以需要处理一下
                 this.scrollY = Math.abs(Math.round(position.y))
             })
         },
-        // 计算foods内部块的高度
+        // (第一步)计算foods内部块的高度
         _getFoodsListHeight() {
             // 获取每一个foodList的dom对象
             let foodList = this.$refs.foodList
@@ -153,20 +160,21 @@ export default {
             // 初始化第一个高度为0
             this.foodListHeight.push(height)
 
-            for (let i = 0; i < foodList.length; i++) {
+            for (let i = 0, len = foodList.length; i < len; i++) {
                 let item = foodList[i]
                 height += item.clientHeight
 
                 this.foodListHeight.push(height)
-                console.log(this.foodListHeight)
             }
         },
         menuFollowScroll(index) {
             let menuItem = this.$refs.menuItem
             let el = menuItem[index]
+
+            // 跳转到指定的dom
             this.menuScroll.scrollToElement(el, 300, 0, -100)
         },
-        // 点击 menu foodList 跳到相对应区域
+        // 点击某个menu区域就显示某个固定的foods区域
         selectMenu(index, event) {
             // 忽略掉BScroll的事件
             if (!event._constructed) {
@@ -175,6 +183,12 @@ export default {
             let foodList = this.$refs.foodList
             let el = foodList[index]
             this.foodsScroll.scrollToElement(el, 300)
+        },
+        selectFood(food, event) {
+            if (!event._constructed) {
+                return
+            }
+            this.selectedFoods = food
         }
     }
 }
@@ -210,6 +224,7 @@ export default {
                 height: 60px;
                 line-height: 14px;
                 &.current {
+                    font-weight: bold;
                     background: #fff;
                 }
                 .inner {
@@ -290,7 +305,7 @@ export default {
                         }
                     }
                     .price {
-                        line-height: 30px;
+                        padding: 10px 0;
                         font-weight: bold;
                         font-size: 0;
                         .now {

@@ -1,8 +1,10 @@
 <template>
     <div class="cart-control">
-        <div class="inline-block minus" v-show="food.count>0" @click="minus($event)">
-            <i class="icon icon-minus"></i>
-        </div>
+        <transition name="move">
+            <div class="inline-block minus" v-show="food.count>0" @click="minus($event)">
+                <i class="icon icon-minus"></i>
+            </div>
+        </transition>
         <div class="inline-block count" v-show="food.count > 0">{{ food.count }}</div>
         <div class="inline-block plus" @click="plus($event)">
             <i class="icon icon-plus"></i>
@@ -20,16 +22,6 @@ export default {
         }
     },
     methods: {
-        minus(event) {
-            // 忽略掉BScroll的事件
-            if (!event._constructed) {
-                return false
-            }
-
-            if (this.food.count) {
-                this.food.count--
-            }
-        },
         plus(event) {
             console.log('click')
             // 忽略掉BScroll的事件
@@ -42,6 +34,16 @@ export default {
                 Vue.set(this.food, 'count', 1)
             } else {
                 this.food.count++
+            }
+        },
+        minus(event) {
+            // 忽略掉BScroll的事件
+            if (!event._constructed) {
+                return false
+            }
+
+            if (this.food.count) {
+                this.food.count--
             }
         }
     }
@@ -81,10 +83,25 @@ export default {
             }
         }
         .minus {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+            transition: all 0.4s linear;
             .icon-minus {
+                transition: all 0.4s linear;
+                transform: rotate(0);
                 background: url("minus.png") no-repeat;
                 -webkit-background-size: 100%;
                 background-size: 100%;
+            }
+            &.move-enter-active, &.move-leave-active {
+                transition: all 0.4s linear;
+            }
+            &.move-enter, &.move-leave-active {
+                opacity: 0;
+                transform: translate3d(34px, 0, 0);
+                .icon-minus {
+                    transform: rotate(180deg);
+                }
             }
         }
         .plus {
