@@ -53,7 +53,7 @@
         <v-cart :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></v-cart>
 
         <!-- food 详情 -->
-        <v-detail :food="selectedFoods"></v-detail>
+        <v-detail :food="selectedFoods" ref="eventFoodDetail"></v-detail>
     </div>
 </template>
 
@@ -189,6 +189,9 @@ export default {
                 return
             }
             this.selectedFoods = food
+
+            // 调用 foodDetail 组件的方法
+            this.$refs.eventFoodDetail.showFoodDetail()
         }
     }
 }
