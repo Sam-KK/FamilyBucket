@@ -1,20 +1,67 @@
 <template>
     <transition name="move">
-        <div class="food-detail" v-show="detailFlag">
-            <div class="banner">
-                <img class="banner-img" :src="food.image" width="100%" height="100%" alt="">
+        <div class="food-detail" v-show="detailFlag" ref="foodDetailWrap">
+            <div class="container">
+                <div class="banner">
+                    <img class="banner-img" :src="food.image" width="100%" height="100%" alt="">
+                    <div class="back" @click="hideDetail">
+                        <i class="iconfont icon-return"></i>
+                    </div>
+                </div>
+
+                <div class="food-module info">
+                    <h1 class="title">{{ food.name }}</h1>
+                    <div class="extra">
+                        <span class="count">月售229份</span>
+                        <span class="rate"> 好评率100%</span>
+                    </div>
+                    <div class="price">
+                        <span class="now">¥8</span>
+                        <span class="old">¥10</span>
+                    </div>
+                    <div class="control-wrap">
+                        <v-control :food="food"></v-control>
+                    </div>
+                    <transition name="fade">
+                        <div class="buy" v-show="!food.count || food.count === 0" @click="addCart">
+                            加入购物车
+                        </div>
+                    </transition>
+                </div>
+
+                <split v-show="food.info"></split>
+
+                <div class="food-module message" v-show="food.info">
+                    <h1 class="title">商品介绍</h1>
+                    <p class="text">{{ food.info }}</p>
+                </div>
+
+                <split></split>
+
+                <div class="food-module message">
+                    <h1 class="title">商品评价</h1>
+                </div>
+
             </div>
         </div>
     </transition>
 </template>
 
 <script type="text/ecmascript-6">
+import Vue from 'vue'
+import split from '@/components/split/split'
+import cartControl from '@/components/cartcontrol/cartcontrol'
+import BScroll from 'better-scroll'
 export default {
     name: 'foodDetail',
     props: {
         food: {
             type: Object
         }
+    },
+    components: {
+        split,
+        'v-control': cartControl
     },
     data() {
         return {
@@ -24,6 +71,21 @@ export default {
     methods: {
         showFoodDetail() {
             this.detailFlag = true
+            this.$nextTick(() => {
+                if (!this.showFoodDetailScroll) {
+                    this.showFoodDetailScroll = new BScroll(this.$refs.foodDetailWrap, {
+                        click: true
+                    })
+                } else {
+                    this.showFoodDetailScroll.refresh()
+                }
+            })
+        },
+        hideDetail() {
+            this.detailFlag = false
+        },
+        addCart() {
+            Vue.set(this.food, 'count', 1)
         }
     }
 }
@@ -50,12 +112,96 @@ export default {
             overflow: hidden;
             height: 0;
             padding-bottom: 100%;
+            .back {
+                position: absolute;
+                top: 0;
+                left: 0;
+                padding: 8px;
+                color: #fff;
+                font-size: 0;
+                .iconfont {
+                    display: inline-block;
+                    font-size: 22px;
+                }
+            }
             .banner-img {
                 position: absolute;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
+            }
+        }
+
+        .food-module {
+            position: relative;
+            padding: 18px;
+            .title {
+                margin-bottom: 8px;
+                font-size: 14px;
+                color: rgb(7, 17, 27);
+                line-height: 14px;
+            }
+        }
+        .info {
+            .title {
+                font-weight: bold;
+            }
+            .extra {
+                margin-bottom: 18px;
+                font-size: 10px;
+                color: rgb(147, 153, 159);
+                .count {
+                    margin-right: 8px;
+                }
+            }
+            .price {
+                font-weight: 700;
+                line-height: 24px;
+                .now {
+                    margin-right: 8px;
+                    font-size: 14px;
+                    color: rgb(240, 20, 20);
+                }
+                .old {
+                    text-decoration: line-through;
+                    font-size: 10px;
+                    color: rgb(147, 153, 159);
+                }
+            }
+            .control-wrap {
+                position: absolute;
+                right: 12px;
+                bottom: 12px;
+            }
+            .buy {
+                position: absolute;
+                right: 18px;
+                bottom: 18px;
+                opacity: 1;
+                color: #fff;
+                height: 24px;
+                line-height: 24px;
+                padding: 0 12px;
+                box-sizing: border-box;
+                border-radius: 12px;
+                font-size: 10px;
+                background: rgb(0, 160, 220);
+                &.fade-enter-active, &.fade-leave-active {
+                    transition: all 0.2s;
+                }
+                &.fade-enter, &.fade-leave-active {
+                    opacity: 0;
+                    z-index: -1;
+                }
+            }
+        }
+        .message {
+            .text {
+                padding: 0 8px;
+                font-size: 12px;
+                color: rgb(77, 85, 93);
+                line-height: 24px;
             }
         }
     }
