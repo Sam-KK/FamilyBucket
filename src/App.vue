@@ -4,14 +4,16 @@
 
         <v-nav></v-nav>
 
-        <router-view :seller="seller"></router-view>
+        <keep-alive>
+            <router-view :seller="seller"></router-view>
+        </keep-alive>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
-import header from './components/header/header'
-import nav from './components/nav/nav'
+import header from '@/components/header/header'
+import nav from '@/components/nav/nav'
 export default {
     name: 'App',
     data() {

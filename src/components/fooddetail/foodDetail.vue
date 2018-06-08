@@ -16,8 +16,8 @@
                         <span class="rate"> 好评率100%</span>
                     </div>
                     <div class="price">
-                        <span class="now">¥8</span>
-                        <span class="old">¥10</span>
+                        <span class="now">¥{{ food.price }}</span>
+                        <span class="old" v-show="food.oldPrice">¥{{ food.oldPrice }}</span>
                     </div>
                     <div class="control-wrap">
                         <v-control :food="food"></v-control>

@@ -347,7 +347,7 @@ export default {
         left: 0;
         width: 100%;
         height: 100%;
-        /*z-index: 40;*/
+        z-index: 40;
         backdrop-filter: blur(10px); //遮罩虚化
         opacity: 1;
         background: rgba(7, 17, 27, 0.6);

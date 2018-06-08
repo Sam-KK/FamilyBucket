@@ -45,7 +45,7 @@
                             <div class="time">{{ item.rateTime | formatDate }}</div>
                             <h1 class="username">{{ item.username }}</h1>
                             <div class="ratings-star">
-                                <v-star :size="36" :score="item.score"></v-star>
+                                <v-star :size="24" :score="item.score"></v-star>
                                 <span class="delivery" v-show="item.deliveryTime">{{ item.deliveryTime }}分钟送达</span>
                             </div>
                             <p class="text">{{ item.text }}</p>
