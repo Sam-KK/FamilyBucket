@@ -36,8 +36,8 @@
     <div class="background">
         <img :src="seller.avatar" width="100%" height="100%" alt="">
     </div>
-    <div class="header-detail clearfix" v-show="showDetail">
-        <div class="detail-container">
+    <div class="header-detail" v-show="showDetail">
+        <div class="detail-container clearfix">
             <div class="content">
                 <h1 class="name">{{ seller.name }}</h1>
                 <div class="star-box">
@@ -236,12 +236,10 @@ export default {
             overflow: auto;
             background: rgba(7, 17, 27, .8);
             .detail-container {
-                margin-top: 64px;
+                width: 100%;
                 min-height: 100%;
                 .content {
-                    padding-bottom: 50px;
-                    padding-left: 9%;
-                    padding-right: 9%;
+                    padding: 64px 9%;
                     .name {
                         font-size: 16px;
                         color: #fff;
@@ -317,10 +315,12 @@ export default {
                 }
             }
             .detail-footer {
-                margin-top: -50px;
-                height: 50px;
+                margin-top: -64px;
+                /*height: 64px;*/
                 text-align: center;
                 .iconfont {
+                    display: inline-block;
+                    padding: 10px;
                     font-size: 24px;
                 }
             }

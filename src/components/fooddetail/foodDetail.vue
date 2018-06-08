@@ -40,8 +40,29 @@
 
                 <div class="food-module message">
                     <h1 class="title">商品评价</h1>
+                    <div class="select-wrap">
+                        <v-select @emitSelect="parentRatingSelect" :ratings="food.ratings"
+                                  :selectType="selectType"
+                                  :onlyContent="onlyContent"
+                                  :desc="desc">
+                        </v-select>
+                    </div>
+                    <div class="rating-wrapper">
+                        <ul>
+                            <li class="rating-items" v-for="(ratings, index) in food.ratings" :key="index">
+                                <div class="user">
+                                    <span class="username">{{ ratings.username }}</span>
+                                    <img class="avatar" :src="ratings.avatar" width="12" height="12" alt="">
+                                </div>
+                                <div class="time">{{ratings.rateTime | formatDate }}</div>
+                                <div class="desc" v-show="ratings.text">
+                                    <i class="iconfont" :class="{'icon-ai45': ratings.rateType === 0, 'icon-thumbdown': ratings.rateType === 1}"></i>
+                                    <span class="ratings-text">{{ ratings.text }}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-
             </div>
         </div>
     </transition>
@@ -49,9 +70,14 @@
 
 <script type="text/ecmascript-6">
 import Vue from 'vue'
+import { formatDate } from '@/assets/js/time'
 import split from '@/components/split/split'
 import cartControl from '@/components/cartcontrol/cartcontrol'
 import BScroll from 'better-scroll'
+import ratingSelect from '@/components/ratingselect/ratingselect'
+
+const ALL = 2
+
 export default {
     name: 'foodDetail',
     props: {
@@ -61,11 +87,19 @@ export default {
     },
     components: {
         split,
-        'v-control': cartControl
+        'v-control': cartControl,
+        'v-select': ratingSelect
     },
     data() {
         return {
-            detailFlag: false
+            detailFlag: false,
+            selectType: ALL,
+            onlyContent: true,
+            desc: {
+                all: '全部',
+                satisfied: '推荐',
+                dissatisfied: '吐槽'
+            }
         }
     },
     methods: {
@@ -86,6 +120,18 @@ export default {
         },
         addCart() {
             Vue.set(this.food, 'count', 1)
+        },
+        parentRatingSelect(type) {
+            this.selectType = type
+            this.$nextTick(() => {
+                this.showFoodDetailScroll.refresh()
+            })
+        }
+    },
+    filters: {
+        formatDate(time) {
+            let date = new Date(time)
+            return formatDate(date, 'YYYY-MM-dd hh:mm')
         }
     }
 }
@@ -202,6 +248,63 @@ export default {
                 font-size: 12px;
                 color: rgb(77, 85, 93);
                 line-height: 24px;
+            }
+            .select-wrap {
+                margin: 0 -18px;
+            }
+            .rating-wrapper {
+                .rating-items {
+                    position: relative;
+                    padding: 16px 0;
+                    .user {
+                        position: absolute;
+                        right: 0;
+                        top: 16px;
+                        line-height: 12px;
+                        font-size: 0;
+                        .username {
+                            display: inline-block;
+                            margin-right: 6px;
+                            vertical-align: middle;
+                            font-size: 10px;
+                            color: #93999f;
+                        }
+                        .avatar {
+                            display: inline-block;
+                            vertical-align: middle;
+                            width: 12px;
+                            height: 12px;
+                            border-radius: 50%;
+                        }
+                    }
+                    .time {
+                        margin-bottom: 6px;
+                        font-size: 10px;
+                        color: rgb(147, 153, 159);
+                        line-height: 12px;
+                    }
+                    .desc {
+                        .iconfont {
+                            display: inline-block;
+                            vertical-align: middle;
+                            font-size: 12px;
+                            line-height: 16px;
+                            &.icon-ai45 {
+                                color: #00a0dc;
+                            }
+                            &.icon-thumbdown {
+                                color: #93999f;
+                            }
+                        }
+                        .ratings-text {
+                            display: inline-block;
+                            vertical-align: middle;
+                            font-size: 12px;
+                            color: rgb(7, 17, 27);
+                            line-height: 16px;
+                        }
+                    }
+                }
             }
         }
     }

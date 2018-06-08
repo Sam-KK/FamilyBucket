@@ -1,5 +1,5 @@
 <template>
-    <div class="seller" rel="seller">
+    <div class="seller" ref="seller">
         <div class="seller-container">
             <!--overview部分-->
             <div class="overview">
@@ -13,6 +13,10 @@
                             ({{ seller.ratingCount }})
                         </span>
                         <span class="seller-desc">月售{{ seller.sellCount }}单</span>
+                    </div>
+                    <div class="favorite" v-on:click="toggleFavorite">
+                        <i class="iconfont icon-collection" :class="{'active': favorite}"></i>
+                        <p class="text">{{ favoriteText }}</p>
                     </div>
                 </div>
                 <!--列表处理remark内容-->
@@ -93,9 +97,19 @@ export default {
             type: Object
         }
     },
+    data() {
+        return {
+            favorite: false
+        }
+    },
     components: {
         'v-star': star,
         'v-split': split
+    },
+    computed: {
+        favoriteText() {
+            return this.favorite ? '已收藏' : '收藏'
+        }
     },
     created() {
         // 主要看这个classMap
@@ -103,10 +117,20 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
+            this.initSellerScroll()
             this._initPicScroll()
         })
     },
     methods: {
+        initSellerScroll() {
+            if (!this.sellerScroll) {
+                this.sellerScroll = new BScroll(this.$refs.seller, {
+                    click: true
+                })
+            } else {
+                this.sellerScroll.refresh()
+            }
+        },
         _initPicScroll() {
             if (this.seller.pics) {
                 let picWidth = 120
@@ -127,6 +151,13 @@ export default {
                     }
                 })
             }
+        },
+        toggleFavorite(event) {
+            // 忽略掉BScroll的事件
+            if (!event._constructed) {
+                return
+            }
+            this.favorite = !this.favorite
         }
     }
 }
@@ -144,35 +175,67 @@ export default {
         }
     }
     .seller {
+        position: absolute;
+        top: 174px;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        overflow: hidden;
         .seller-container {
             .overview {
                 padding: 18px;
-                .title {
-                    margin-bottom: 8px;
-                    font-size: 14px;
-                    line-height: 14px;
-                    color: rgb(7, 17, 27);
-                }
-                .desc {
-                    font-size: 0;
-                    .star-wrap,
-                    .seller-desc {
-                        display: inline-block;
-                        vertical-align: middle;
+                .head {
+                    position: relative;
+                    margin-bottom: 18px;
+                    .title {
+                        margin-bottom: 8px;
+                        font-size: 14px;
+                        line-height: 14px;
+                        color: rgb(7, 17, 27);
                     }
-                    .star-wrap {
-                        margin-right: 8px;
+                    .desc {
+                        font-size: 0;
+                        .star-wrap,
+                        .seller-desc {
+                            display: inline-block;
+                            vertical-align: middle;
+                        }
+                        .star-wrap {
+                            margin-right: 8px;
+                        }
+                        .seller-desc {
+                            margin-right: 12px;
+                            font-size: 10px;
+                            color: rgb(77, 85, 93);
+                            line-height: 18px;
+                        }
                     }
-                    .seller-desc {
-                        margin-right: 12px;
-                        font-size: 10px;
-                        color: rgb(77, 85, 93);
-                        line-height: 18px;
+                    .favorite {
+                        z-index: 1;
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        width: 50px;
+                        text-align: center;
+                        .iconfont {
+                            font-size: 24px;
+                            color: #d4d6d9;
+                            &.active {
+                                color: #f01414;
+                            }
+                        }
+                        .text {
+                            margin-top: 4px;
+                            font-size: 10px;
+                            color: #4d555d;
+                            line-height: 1;
+                        }
                     }
                 }
                 .remark {
                     display: flex;
                     padding-top: 18px;
+                    border-top: 1px solid #07111b1a;
                     .block {
                         flex: 1;
                         text-align: center;
