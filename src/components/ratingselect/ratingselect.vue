@@ -13,8 +13,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-const SATISFIED = 0
-const DISSATISFIED = 1
+// const SATISFIED = 0
+// const DISSATISFIED = 1
 const ALL = 2
 export default {
     name: 'ratingselect',

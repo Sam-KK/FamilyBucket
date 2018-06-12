@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import loginPage from '@/components/login/loginPage'
 import goods from '@/components/goods/goods'
 import ratings from '@/components/ratings/ratings'
 import seller from '@/components/seller/seller'
@@ -10,7 +11,12 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/goods'
+            redirect: '/loginPage'
+        },
+        {
+            path: '/loginPage',
+            name: 'loginPage',
+            component: loginPage
         },
         {
             path: '/goods',
