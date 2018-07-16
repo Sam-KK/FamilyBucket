@@ -24,7 +24,7 @@ export default {
 }
 </script>
 
-<style type="text/less" lang="less">
+<style type="text/less" lang="less" scoped>
     .mask {
         position: fixed;
         top: 0;
