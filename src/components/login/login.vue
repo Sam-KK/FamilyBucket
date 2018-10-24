@@ -23,7 +23,7 @@
     </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 // import axios from 'axios'
 export default {
     name: 'login',
@@ -95,6 +95,6 @@ export default {
 }
 </script>
 
-<style type="text/less" lang="less" scoped>
+<style lang="less" scoped>
 
 </style>

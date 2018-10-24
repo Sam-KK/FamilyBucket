@@ -32,6 +32,9 @@ export default {
     }
 }
 </script>
+<<<<<<< HEAD
 
 <style lang="less" scoped>
 </style>
+=======
+>>>>>>> e5d8ec8b44ddbb1543c9d2b89718d21578f0e76a

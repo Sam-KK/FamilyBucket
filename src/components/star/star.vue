@@ -56,79 +56,70 @@ export default {
 </script>
 
 <style lang="less" scoped>
-    .bg-img(@url) {
-        background: url("@{url}@2x.png") no-repeat;
-        background-size: 100%;
-    }
-    @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3) {
-        .bg-img(@url) {
-            background: url("@{url}@3x.png") no-repeat;
-            background-size: 100%;
-        }
-    }
-.star {
-    display: inline-block;
-    font-size: 0;
-    .star-item {
-        display: inline-block;
-        vertical-align: middle;
-    }
-    &.star-48 {
+    @import "~styles/mixins.less";
+    .star {
+        // display: inline-block;
+        font-size: 0;
         .star-item {
-            margin-right: 22px;
-            width: 20px;
-            height: 20px;
-            &:last-child {
-                margin-right: 0;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        &.star-48 {
+            .star-item {
+                margin-right: 22px;
+                width: 20px;
+                height: 20px;
+                &:last-child {
+                    margin-right: 0;
+                }
+                &.on {
+                    .bg-img('star48_on');
+                }
+                &.half {
+                    .bg-img('star48_half');
+                }
+                &.off {
+                    .bg-img('star48_off');
+                }
             }
-            &.on {
-                .bg-img('star48_on');
+        }
+        &.star-36 {
+            .star-item {
+                margin-right: 6px;
+                width: 15px;
+                height: 15px;
+                &:last-child {
+                    margin-right: 0;
+                }
+                &.on {
+                    .bg-img('star36_on');
+                }
+                &.half {
+                    .bg-img('star36_half');
+                }
+                &.off {
+                    .bg-img('star36_off');
+                }
             }
-            &.half {
-                .bg-img('star48_half');
-            }
-            &.off {
-                .bg-img('star48_off');
+        }
+        &.star-24 {
+            .star-item {
+                margin-right: 3px;
+                width: 10px;
+                height: 10px;
+                &:last-child {
+                    margin-right: 0;
+                }
+                &.on {
+                    .bg-img('star36_on');
+                }
+                &.half {
+                    .bg-img('star36_half');
+                }
+                &.off {
+                    .bg-img('star36_off');
+                }
             }
         }
     }
-    &.star-36 {
-        .star-item {
-            margin-right: 6px;
-            width: 15px;
-            height: 15px;
-            &:last-child {
-                margin-right: 0;
-            }
-            &.on {
-                .bg-img('star36_on');
-            }
-            &.half {
-                .bg-img('star36_half');
-            }
-            &.off {
-                .bg-img('star36_off');
-            }
-        }
-    }
-    &.star-24 {
-        .star-item {
-            margin-right: 3px;
-            width: 10px;
-            height: 10px;
-            &:last-child {
-                margin-right: 0;
-            }
-            &.on {
-                .bg-img('star36_on');
-            }
-            &.half {
-                .bg-img('star36_half');
-            }
-            &.off {
-                .bg-img('star36_off');
-            }
-        }
-    }
-}
 </style>
