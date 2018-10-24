@@ -13,3 +13,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 *Program Files
+*package-lock.json
