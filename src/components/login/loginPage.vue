@@ -12,7 +12,7 @@
     </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 import login from '@/components/login/login'
 import register from '@/components/login/register'
 export default {

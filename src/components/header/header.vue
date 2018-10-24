@@ -1,77 +1,77 @@
 <template>
-<div class="header">
-    <div class="container">
-        <div class="avatar">
-            <img :src="seller.avatar" width="64" height="64" alt="">
-        </div>
-        <div class="content">
-            <div class="title">
-                <span class="brand"></span>
-                <h3 class="name">{{ seller.name }}</h3>
+    <div class="header">
+        <div class="container">
+            <div class="avatar">
+                <img :src="seller.avatar" width="64" height="64" alt="">
             </div>
-            <div class="description">
-                {{ seller.description }} / {{seller.deliveryTime}}分钟送达
+            <div class="content">
+                <div class="title">
+                    <span class="brand"></span>
+                    <h3 class="name">{{ seller.name }}</h3>
+                </div>
+                <div class="description">
+                    {{ seller.description }} / {{seller.deliveryTime}}分钟送达
+                </div>
+                <div class="supports" v-if="seller.supports">
+                    <span class="icon"></span>
+                    <span class="text">
+                        {{ seller.supports[0].description }}
+                    </span>
+                </div>
             </div>
-            <div class="supports" v-if="seller.supports">
-                <span class="icon"></span>
-                <span class="text">
-                    {{ seller.supports[0].description }}
+            <div class="count-wrap" v-if="seller.supports" @click="eventShowDetail">
+                <span class="count">
+                    {{ seller.supports.length }}个
                 </span>
+                <i class="iconfont icon-previewright"></i>
             </div>
         </div>
-        <div class="count-wrap" v-if="seller.supports" @click="eventShowDetail">
-            <span class="count">
-                {{ seller.supports.length }}个
+        <div class="bulletin" @click="eventShowDetail">
+            <span class="icon"></span>
+            <span class="text">
+                {{ seller.bulletin }}
             </span>
             <i class="iconfont icon-previewright"></i>
         </div>
-    </div>
-    <div class="bulletin" @click="eventShowDetail">
-        <span class="icon"></span>
-        <span class="text">
-            {{ seller.bulletin }}
-        </span>
-        <i class="iconfont icon-previewright"></i>
-    </div>
-    <div class="background">
-        <img :src="seller.avatar" width="100%" height="100%" alt="">
-    </div>
-    <div class="header-detail" v-show="showDetail">
-        <div class="detail-container clearfix">
-            <div class="content">
-                <h1 class="name">{{ seller.name }}</h1>
-                <div class="star-box">
-                    <v-star :size="48" :score="seller.score"></v-star>
-                </div>
-                <div class="title">
-                    <div class="line"></div>
-                    <div class="text">优惠信息</div>
-                    <div class="line"></div>
-                </div>
-                <ul class="supports">
-                    <li v-for="item in seller.supports" :key="item.type">
-                        <span class="icon" :class="classMap[item.type]"></span>
-                        <span class="text">{{ item.description }}</span>
-                    </li>
-                </ul>
-                <div class="title">
-                    <div class="line"></div>
-                    <div class="text">商家公告</div>
-                    <div class="line"></div>
-                </div>
-                <div class="detail-bulletin">
-                    <p>{{ seller.bulletin }}</p>
+        <div class="background">
+            <img :src="seller.avatar" width="100%" height="100%" alt="">
+        </div>
+        <div class="header-detail" v-show="showDetail">
+            <div class="detail-container clearfix">
+                <div class="content">
+                    <h1 class="name">{{ seller.name }}</h1>
+                    <div class="star-box">
+                        <v-star :size="48" :score="seller.score"></v-star>
+                    </div>
+                    <div class="title">
+                        <div class="line"></div>
+                        <div class="text">优惠信息</div>
+                        <div class="line"></div>
+                    </div>
+                    <ul class="supports">
+                        <li v-for="item in seller.supports" :key="item.type">
+                            <span class="icon" :class="classMap[item.type]"></span>
+                            <span class="text">{{ item.description }}</span>
+                        </li>
+                    </ul>
+                    <div class="title">
+                        <div class="line"></div>
+                        <div class="text">商家公告</div>
+                        <div class="line"></div>
+                    </div>
+                    <div class="detail-bulletin">
+                        <p>{{ seller.bulletin }}</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="detail-footer" @click="eventHideDetail">
-            <i class="iconfont icon-close"></i>
+            <div class="detail-footer" @click="eventHideDetail">
+                <i class="iconfont icon-close"></i>
+            </div>
         </div>
     </div>
-</div>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 import star from '@/components/star/star'
 export default {
     name: 'homeHeader',
@@ -102,19 +102,18 @@ export default {
     }
 }
 </script>
-
 <style lang="less" scoped>
     @import "~styles/mixins.less";
-    .bg-img(@url) {
-        background: url("@{url}@2x.png") no-repeat;
-        background-size: 100%;
-    }
-    @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3) {
-        .bg-img(@url) {
-            background: url("@{url}@3x.png") no-repeat;
-            background-size: 100%;
-        }
-    }
+    // .bg-img(@url) {
+    //     background: url("@{url}@2x.png") no-repeat;
+    //     background-size: 100%;
+    // }
+    // @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3) {
+    //     .bg-img(@url) {
+    //         background: url("@{url}@3x.png") no-repeat;
+    //         background-size: 100%;
+    //     }
+    // }
     .header {
         position: relative;
         overflow: hidden;

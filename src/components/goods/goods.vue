@@ -4,7 +4,7 @@
         <div class="menu" ref="menuWrapper">
             <ul>
                 <li v-for="(item, index) in goods"
-                    :class="{'current': currentIndex === index}"
+                    :class="{'current': currentIndex === index}" class="menu-item"
                     @click="selectMenu(index, $event)"
                     ref="menuItem" :key="index">
                     <div class="inner">
@@ -57,7 +57,7 @@
     </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 import axios from 'axios'
 import BScroll from 'better-scroll'
 import cartControl from '@/components/cartcontrol/cartcontrol'
@@ -145,7 +145,7 @@ export default {
                 probeType: 3
             })
 
-            // (第二部) 获取 scrollY 区间值
+            // (第二部)监听 foodsWrapper 滚动事件， 获取 scrollY 区间值
             this.foodsScroll.on('scroll', (position) => {
                 // 滚动坐标会出现负的,并且是小数,所以需要处理一下
                 this.scrollY = Math.abs(Math.round(position.y))
@@ -166,7 +166,10 @@ export default {
 
                 this.foodListHeight.push(height)
             }
+
+            console.log(this.foodListHeight)
         },
+        // menu 菜单跟随滚动
         menuFollowScroll(index) {
             let menuItem = this.$refs.menuItem
             let el = menuItem[index]
@@ -198,16 +201,7 @@ export default {
 </script>
 
 <style type="text/less" lang="less" scoped>
-    .bg-img(@url) {
-        background: url("@{url}@2x.png") no-repeat;
-        background-size: 100%;
-    }
-    @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3) {
-        .bg-img(@url) {
-            background: url("@{url}@3x.png") no-repeat;
-            background-size: 100%;
-        }
-    }
+    @import "~styles/mixins.less";
     .goods {
         display: flex;
         position: absolute;
@@ -216,12 +210,12 @@ export default {
         bottom: 46px;
         overflow: hidden;
         .menu {
-            position: relative;
+            // position: relative;
             flex: 0 0 80px;
             width: 80px;
             background: #f3f5f7;
-            li {
-                position: relative;
+            .menu-item {
+                // position: relative;
                 display: table;
                 width: 100%;
                 height: 60px;
