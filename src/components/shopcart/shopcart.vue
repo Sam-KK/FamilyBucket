@@ -81,7 +81,7 @@ export default {
         }
     },
     computed: {
-        // 计算总价
+        // 计算总价 依赖于 selectFoods
         totalPrice() {
             let total = 0
             this.selectFoods.forEach((food) => {
@@ -89,7 +89,7 @@ export default {
             })
             return total
         },
-        // 计算总数量
+        // 计算总数量 依赖于 selectFoods
         totalCount() {
             let count = 0
             this.selectFoods.forEach((food) => {
@@ -97,7 +97,7 @@ export default {
             })
             return count
         },
-        // 去结算
+        // 去结算 依赖于 totalPrice
         payText() {
             if (this.totalPrice === 0) {
                 return `¥${this.minPrice}起送`
@@ -108,7 +108,7 @@ export default {
                 return `去结算`
             }
         },
-        // 去结算样式
+        // 去结算样式 依赖于 totalPrice
         payClass() {
             if (this.totalPrice < this.minPrice) {
                 return 'not-enough'
