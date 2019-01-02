@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="login-box">
         <div class="login-wrap clearfix">
             <div class="left">
                 <v-login></v-login>
@@ -15,6 +15,7 @@
 <script>
 import login from '@/components/login/login'
 import register from '@/components/login/register'
+
 export default {
     name: 'loginPage',
     components: {
@@ -24,7 +25,7 @@ export default {
 }
 </script>
 
-<style type="text/less" lang="less" scoped>
+<style type="text/less" lang="less">
     .mask {
         position: fixed;
         top: 0;
@@ -33,33 +34,28 @@ export default {
         height: 100%;
         background: rgba(0, 0, 0, .5);
     }
+
+    .login-box {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
     .login-wrap {
         z-index: 1;
         position: absolute;
-        left: 50%;
-        margin-left: -510px;
-        padding: 60px;
-        width: 900px;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        padding: 45px 15px;
         font-size: 0;
         background: #fff;
-        &:before {
-            position: absolute;
-            left: 50%;
-            top: 60px;
-            content: "";
-            bottom: 60px;
-            width: 1px;
-            background: #e1e1e1;
-        }
-        .left,
-        .right {
-            float: left;
-            padding-right: 60px;
-            padding-left: 60px;
-            width: 50%;
-            box-sizing: border-box;
-        }
+        overflow: scroll;
     }
+
     .login-form {
         margin: 0 auto;
         width: 100%;
@@ -88,7 +84,7 @@ export default {
                     box-sizing: border-box;
                     outline: none;
                     box-shadow: none;
-                    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+                    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
                     &:focus {
                         border-color: #000;
                     }

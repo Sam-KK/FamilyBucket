@@ -17,7 +17,7 @@
                 <div class="error-tip" v-show="errorState.passwordError">{{ errorModel.passwordErrorMsg }}</div>
             </div>
             <div class="form-group">
-                <button class="btn">登录</button>
+                <button class="btn" @click="login">登录</button>
             </div>
         </form>
     </div>
@@ -90,6 +90,10 @@ export default {
                 this.errorState.passwordError = false
                 this.errorModel.passwordErrorMsg = ''
             }
+        },
+        login() {
+            this.accountBlur()
+            this.passwordBlur()
         }
     }
 }

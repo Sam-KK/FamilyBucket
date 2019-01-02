@@ -68,7 +68,7 @@
     </transition>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 import Vue from 'vue'
 import { formatDate } from '@/assets/js/time'
 import split from '@/components/split/split'
